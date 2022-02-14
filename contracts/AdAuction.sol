@@ -9,8 +9,8 @@ contract AdAuction {
     string public adImageUrl;
     string public adLinkUrl;
 
-    uint lastPrice;
-    uint adPriceIncrement;
+    uint public lastPrice;
+    uint public adPriceIncrement;
 
     constructor(string memory _adText, string memory _adImageUrl, string memory _adLinkUrl, uint _adPrice, uint _adPriceIncrement) {
         owner = msg.sender;

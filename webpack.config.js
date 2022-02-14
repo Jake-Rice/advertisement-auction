@@ -13,6 +13,10 @@ module.exports = {
             loader: "babel-loader",
         }
       },
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
     ],
   },
   resolve: {

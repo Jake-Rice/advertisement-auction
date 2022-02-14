@@ -6,6 +6,8 @@ const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
 import Ad from './Components/Ad'
 import OrderForm from './Components/OrderForm'
 
+import './styles.css'
+
 const App = () => {
     const [ad, setAd] = useState(["", "", ""])
     const [showOrderForm, toggleShowOrderForm] = useState(false)
@@ -42,6 +44,7 @@ const App = () => {
     }
 
     const handleSubmit = async (text, image, link, price) => {
+        toggleShowOrderForm(!showOrderForm)
         const provider = new ethers.providers.JsonRpcProvider()
         const signer = provider.getSigner(0)
         const contract = new ethers.Contract(contractAddress, AdAuction.abi, signer)
@@ -53,7 +56,7 @@ const App = () => {
     return (
         <div>
             <Ad content={ad}/>
-            <input type="button" value="Buy This Ad Space" onClick={()=>{toggleShowOrderForm(!showOrderForm)}}/>
+            <input type="button" value={showOrderForm ? "Cancel Order" : "Buy This Ad Space"} onClick={()=>{toggleShowOrderForm(!showOrderForm)}}/>
             {showOrderForm && <OrderForm price={price} submit={handleSubmit}/>}
         </div>
     )

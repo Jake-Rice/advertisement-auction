@@ -12,6 +12,8 @@ contract AdAuction {
     uint public lastPrice;
     uint public adPriceIncrement;
 
+    event adPurchased(uint price);
+
     constructor(string memory _adText, string memory _adImageUrl, string memory _adLinkUrl, uint _adPrice, uint _adPriceIncrement) {
         owner = msg.sender;
         setAd(_adText, _adImageUrl, _adLinkUrl);
@@ -26,6 +28,7 @@ contract AdAuction {
         adImageUrl = _adImageUrl;
         adLinkUrl = _adLinkUrl;
         updatePrice(msg.value);
+        emit adPurchased(lastPrice);
     }
 
     function setAd(string memory _adText, string memory _adImageUrl, string memory _adLinkUrl) private {

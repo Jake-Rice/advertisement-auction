@@ -3,16 +3,25 @@ import { ethers } from 'ethers'
 import AdAuction from '../artifacts/contracts/AdAuction.sol/AdAuction.json'
 const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
 
+import Ad from './Components/Ad'
 import OrderForm from './Components/OrderForm'
 
 const App = () => {
-    const [ad, setAd] = useState(["t", "i", "l"])
+    const [ad, setAd] = useState(["", "", ""])
     const [showOrderForm, toggleShowOrderForm] = useState(false)
     const [price, setPrice] = useState("")
 
     useEffect(() => {
-        getAdPrice().then(data => setPrice(data))
-    })
+        getAd()
+        const provider = new ethers.providers.JsonRpcProvider()
+        const contract = new ethers.Contract(contractAddress, AdAuction.abi, provider)
+        contract.on("adPurchased", async (purchasePrice) => {
+            const increment = await contract.adPriceIncrement()
+            const newPrice = increment.add(purchasePrice).toString()
+            setPrice(newPrice)
+            getAd()
+        })
+    }, [])
 
     const getAd = async (event) => {
         const provider = new ethers.providers.JsonRpcProvider()
@@ -43,14 +52,8 @@ const App = () => {
 
     return (
         <div>
-            <p>Price: {price}</p>
-            <div className="ad">
-                <p>{ad[0]}</p>
-                <p>{ad[1]}</p>
-                <p>{ad[2]}</p>
-            </div>
-            <input type="button" value="Refresh Ad" onClick={getAd}/>
-            <input type="button" value="Change Ad" onClick={()=>{toggleShowOrderForm(!showOrderForm)}}/>
+            <Ad content={ad}/>
+            <input type="button" value="Buy This Ad Space" onClick={()=>{toggleShowOrderForm(!showOrderForm)}}/>
             {showOrderForm && <OrderForm price={price} submit={handleSubmit}/>}
         </div>
     )

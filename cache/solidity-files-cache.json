@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/jake/workspace/advertisement-auction/contracts/AdAuction.sol": {
-      "lastModificationDate": 1644860099185,
-      "contentHash": "4f1c8a63c08441003ee28220652d469c",
+      "lastModificationDate": 1644869573607,
+      "contentHash": "9659bc7ed96be5e1f77f9721eaaa210e",
       "sourceName": "contracts/AdAuction.sol",
       "solcConfig": {
         "version": "0.8.11",

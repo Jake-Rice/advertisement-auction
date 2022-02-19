@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
 import AdAuction from '../artifacts/contracts/AdAuction.sol/AdAuction.json'
-const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
+const contractAddress = '0x571b321ee46B1eDab148E5160D04d2C687ee8295'
 
 import Ad from './Components/Ad'
 import OrderForm from './Components/OrderForm'
@@ -11,53 +11,42 @@ import './styles.css'
 const App = () => {
     const [ad, setAd] = useState(["", "", ""])
     const [showOrderForm, toggleShowOrderForm] = useState(false)
-    const [price, setPrice] = useState("")
 
+    const [account, setAccount] = useState("")
+
+    //infura endpoint to read ad data without connecting a wallet
+    const infura = "https://rinkeby.infura.io/v3/e98214b47f724efdb547ad61975384ba"
+    
     useEffect(() => {
-        getAd()
-        const provider = new ethers.providers.JsonRpcProvider()
+        const provider = new ethers.providers.JsonRpcProvider(infura)
         const contract = new ethers.Contract(contractAddress, AdAuction.abi, provider)
+        getAd(contract)
         contract.on("adPurchased", async (purchasePrice) => {
-            const increment = await contract.adPriceIncrement()
-            const newPrice = increment.add(purchasePrice).toString()
-            setPrice(newPrice)
-            getAd()
+            getAd(contract)
         })
     }, [])
 
-    const getAd = async (event) => {
-        const provider = new ethers.providers.JsonRpcProvider()
-        const contract = new ethers.Contract(contractAddress, AdAuction.abi, provider)
+    const getAd = async (contract) => {
         const adText = await contract.adText()
         const adImageUrl = await contract.adImageUrl()
         const adLinkUrl = await contract.adLinkUrl()
         setAd([adText, adImageUrl, adLinkUrl])
     }
 
-    const getAdPrice = async () => {
-        const provider = new ethers.providers.JsonRpcProvider()
-        const contract = new ethers.Contract(contractAddress, AdAuction.abi, provider)
-        const lastPrice = await contract.lastPrice()
-        const increment = await contract.adPriceIncrement()
-        const newPrice = lastPrice.add(increment).toString()
-        return newPrice
+    const handleOrder = () => {
+        toggleShowOrderForm(!showOrderForm)
     }
 
-    const handleSubmit = async (text, image, link, price) => {
-        toggleShowOrderForm(!showOrderForm)
-        const provider = new ethers.providers.JsonRpcProvider()
-        const signer = provider.getSigner(0)
-        const contract = new ethers.Contract(contractAddress, AdAuction.abi, signer)
-        let tx = await contract.buyAd(text, image, link, {value: price})
-        getAdPrice().then((data) => {setPrice(data)})
-        await getAd()
+    const handleSubmit = (contract) => {
+        console.log(showOrderForm)
+        toggleShowOrderForm(false)
     }
 
     return (
         <div>
             <Ad content={ad}/>
-            <input type="button" value={showOrderForm ? "Cancel Order" : "Buy This Ad Space"} onClick={()=>{toggleShowOrderForm(!showOrderForm)}}/>
-            {showOrderForm && <OrderForm price={price} submit={handleSubmit}/>}
+            <input type="button" value={showOrderForm ? "Cancel Order" : "Buy This Ad Space"} onClick={handleOrder}/>
+            {showOrderForm && <OrderForm submit={handleSubmit}/>}
         </div>
     )
 }

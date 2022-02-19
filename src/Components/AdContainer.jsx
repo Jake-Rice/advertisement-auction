@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react'
+import Button from '@mui/material/Button'
+
 import { ethers } from 'ethers'
-import AdAuction from '../artifacts/contracts/AdAuction.sol/AdAuction.json'
+import AdAuction from '../../artifacts/contracts/AdAuction.sol/AdAuction.json'
 const contractAddress = '0x571b321ee46B1eDab148E5160D04d2C687ee8295'
 
-import Ad from './Components/Ad'
-import OrderForm from './Components/OrderForm'
+import Ad from './Ad'
+import OrderForm from './OrderForm'
 
-import './styles.css'
+import './adContainer.css'
 
-const App = () => {
+const AdContainer = () => {
     const [ad, setAd] = useState(["", "", ""])
     const [showOrderForm, toggleShowOrderForm] = useState(false)
-
-    const [account, setAccount] = useState("")
 
     //infura endpoint to read ad data without connecting a wallet
     const infura = "https://rinkeby.infura.io/v3/e98214b47f724efdb547ad61975384ba"
@@ -38,17 +38,18 @@ const App = () => {
     }
 
     const handleSubmit = (contract) => {
-        console.log(showOrderForm)
         toggleShowOrderForm(false)
     }
 
     return (
         <div>
             <Ad content={ad}/>
-            <input type="button" value={showOrderForm ? "Cancel Order" : "Buy This Ad Space"} onClick={handleOrder}/>
+            <div className="order-button-container">
+                <Button variant="text" size="small" onClick={handleOrder}>{showOrderForm ? "Cancel Order" : "Buy This Ad Space"}</Button>
+            </div>
             {showOrderForm && <OrderForm submit={handleSubmit}/>}
         </div>
     )
 }
 
-export default App
+export default AdContainer

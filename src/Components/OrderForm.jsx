@@ -1,4 +1,7 @@
 import React, {useState, useEffect} from "react"
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+
 import { ethers } from 'ethers'
 import Ad from './Ad'
 
@@ -13,13 +16,11 @@ const OrderForm = (props) => {
     const [balance, setBalance] = useState('')
     const [price, setPrice] = useState('')
 
-    let provider, signer, contract
-
     useEffect(async () =>{
-        provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+        const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
         await provider.send("eth_requestAccounts", []);
-        signer = provider.getSigner()
-        contract = new ethers.Contract(contractAddress, AdAuction.abi, signer)
+        const signer = provider.getSigner()
+        const contract = new ethers.Contract(contractAddress, AdAuction.abi, signer)
         const balanceBN = await signer.getBalance()
         const balanceStr = balanceBN.toString()
         setBalance(balanceStr)
@@ -32,10 +33,10 @@ const OrderForm = (props) => {
     }, [])
 
     const handleSubmit = async (text, image, link) => {
-        provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+        const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
         await provider.send("eth_requestAccounts", []);
-        signer = provider.getSigner()
-        contract = new ethers.Contract(contractAddress, AdAuction.abi, signer)
+        const signer = provider.getSigner()
+        const contract = new ethers.Contract(contractAddress, AdAuction.abi, signer)
         let tx = await contract.buyAd(text, image, link, {value: ethers.utils.parseEther(price)})
         props.submit(contract)
     }
@@ -43,14 +44,18 @@ const OrderForm = (props) => {
     return (
         <div>
             <form>
-                <label>Current Price: {price} ETH</label><br/>
-                <label>Account Balance: {balance} ETH</label><br/>
-                <label>Ad Text: <input type="text" value={text} onChange={(event) => {setText(event.target.value)}}/></label><br/>
-                <label>Image URL: <input type="text" value={image} onChange={(event) => {setImage(event.target.value)}}/></label><br/>
-                <label>Link URL: <input type="text" value={link} onChange={(event) => {setLink(event.target.value)}}/></label><br/>
-                <input type="button" value="Buy Now" onClick={()=>handleSubmit(text, image, link)}/>
+                <div className="display-container">
+                    <label>Current Price: {price} ETH</label>
+                    <label>Account Balance: {balance} ETH</label>
+                </div>
+                <div className="data-container">
+                    <label>Ad Text: </label><TextField variant="outlined" value={text} onChange={(event) => {setText(event.target.value)}}/>
+                    <label>Image URL: </label><TextField variant="outlined" value={image} onChange={(event) => {setImage(event.target.value)}}/>
+                    <label>Link URL: </label><TextField variant="outlined" value={link} onChange={(event) => {setLink(event.target.value)}}/>
+                </div>
+                <div className="buy-button"><Button variant="contained" color="primary" onClick={()=>handleSubmit(text, image, link)}>Buy Now</Button></div>
             </form>
-            <label>Preview: <Ad content={[text, image, link]}/></label>
+            <label >Preview: </label><div className="preview-container" ><Ad content={[text, image, link]}/></div>
         </div>
     )
 }

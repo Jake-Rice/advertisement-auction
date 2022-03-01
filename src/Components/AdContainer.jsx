@@ -43,7 +43,7 @@ const AdContainer = () => {
 
     return (
         <div>
-            <Ad content={ad}/>
+            <Ad content={[...ad, true]}/>
             <div className="order-button-container">
                 <Button variant="text" size="small" onClick={handleOrder}>{showOrderForm ? "Cancel Order" : "Buy This Ad Space"}</Button>
             </div>

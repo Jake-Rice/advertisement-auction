@@ -21,6 +21,7 @@ module.exports = {
   },
   resolve: {
     extensions: ["*", ".js", ".jsx"],
+    fallback: { "path": false }
   },
   output: {
     path: path.join(__dirname, "./dist"),

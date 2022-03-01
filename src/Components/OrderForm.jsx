@@ -55,7 +55,7 @@ const OrderForm = (props) => {
                 </div>
                 <div className="buy-button"><Button variant="contained" color="primary" onClick={()=>handleSubmit(text, image, link)}>Buy Now</Button></div>
             </form>
-            <label >Preview: </label><div className="preview-container" ><Ad content={[text, image, link]}/></div>
+            <label >Preview: </label><div className="preview-container" ><Ad content={[text, image, link, false]}/></div>
         </div>
     )
 }
